@@ -98,11 +98,6 @@ namespace Chimera {
             interpolate_point(previous_tick->data.orientation[0], current_tick->data.orientation[0], data.orientation[0], interpolation_tick_progress);
             interpolate_point(previous_tick->data.orientation[1], current_tick->data.orientation[1], data.orientation[1], interpolation_tick_progress);
         }
-
-        // Otherwise, only interpolate Z in case of elevators or Halo's glitchy crouching
-        else {
-            data.position.z = previous_tick->data.position.z + (current_tick->data.position.z - previous_tick->data.position.z) * interpolation_tick_progress;
-        }
     }
 
     void interpolate_camera_after() noexcept {
