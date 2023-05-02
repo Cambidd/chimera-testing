@@ -82,11 +82,14 @@ namespace Chimera {
 
         // If we're in a vehicle, interpolate the rotation
         bool vehicle_first_person = false;
-        if(type == CameraType::CAMERA_FIRST_PERSON) {
+        if(type == CameraType::CAMERA_FIRST_PERSON || type == CameraType::CAMERA_DEBUG) {
             auto *player = PlayerTable::get_player_table().get_client_player();
             if(player) {
                 auto *object = ObjectTable::get_object_table().get_dynamic_object(player->object_id);
                 if(object) {
+                    if (type == CameraType::CAMERA_DEBUG && object->health >= 0.0) {
+                        return;
+                    }
                     vehicle_first_person = !object->parent.is_null();
                 }
             }
