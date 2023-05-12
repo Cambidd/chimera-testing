@@ -66,9 +66,11 @@ namespace Chimera {
             skip = (type == CameraType::CAMERA_CINEMATIC && current_tick->followed_object.is_null()) ||
                    (current_tick->followed_object != previous_tick->followed_object || current_tick->type != previous_tick->type);
 
-            // Lastly, if we're not skipping, check if we went really far too quickly in first person
+            // Lastly, if we're not skipping, check if we went really far too quickly in first person.
+            // There is no scenario short of some crazy launch where the player camera should be moving at more than ~0.5 units/tick.
+            // Reducing this threshold prevents some fake camera positions which cause the visuals for rooms to load that shouldn't when performing some teleport tricks.
             if(!skip && type == CameraType::CAMERA_FIRST_PERSON) {
-                skip = distance_squared(previous_tick->data.position, current_tick->data.position) > 5.0 * 5.0;
+                skip = (distance_squared(previous_tick->data.position, current_tick->data.position) > 0.5 * 0.5);
             }
         }
 
@@ -80,14 +82,16 @@ namespace Chimera {
         auto &data = camera_data();
         extern float interpolation_tick_progress;
 
-        // If we're in a vehicle, interpolate the rotation
+        // If we're in a vehicle, interpolate the rotation, or if we're using the debug camera, don't interpolate
         bool vehicle_first_person = false;
         if(type == CameraType::CAMERA_FIRST_PERSON || type == CameraType::CAMERA_DEBUG) {
             auto *player = PlayerTable::get_player_table().get_client_player();
             if(player) {
                 auto *object = ObjectTable::get_object_table().get_dynamic_object(player->object_id);
                 if(object) {
+                    //CHeck if dead and if not, don't interpolate debug/death camera.
                     if (type == CameraType::CAMERA_DEBUG && object->health >= 0.0) {
+                        skip = true;
                         return;
                     }
                     vehicle_first_person = !object->parent.is_null();
@@ -100,6 +104,11 @@ namespace Chimera {
             interpolate_point(previous_tick->data.position, current_tick->data.position, data.position, interpolation_tick_progress);
             interpolate_point(previous_tick->data.orientation[0], current_tick->data.orientation[0], data.orientation[0], interpolation_tick_progress);
             interpolate_point(previous_tick->data.orientation[1], current_tick->data.orientation[1], data.orientation[1], interpolation_tick_progress);
+        }
+
+        // Otherwise, only interpolate Z in case of elevators or Halo's glitchy crouching
+        else {
+            data.position.z = previous_tick->data.position.z + (current_tick->data.position.z - previous_tick->data.position.z) * interpolation_tick_progress;
         }
     }
 
