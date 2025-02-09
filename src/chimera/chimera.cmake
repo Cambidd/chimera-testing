@@ -116,6 +116,8 @@ add_library(chimera STATIC
     src/chimera/fix/interpolate/light.cpp
     src/chimera/fix/interpolate/object.cpp
     src/chimera/fix/interpolate/particle.cpp
+    src/chimera/fix/shader/shader_transparent_generic.cpp
+    src/chimera/fix/shader/shader_transparent_generic.S
     src/chimera/fix/leak_descriptors.cpp
     src/chimera/fix/model_detail.cpp
     src/chimera/fix/model_detail.S

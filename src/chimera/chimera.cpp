@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cmath>
 #include <optional>
+#include <ringworld.h>
 #include "annoyance/novideo.hpp"
 #include "annoyance/tab_out_video.hpp"
 #include "bookmark/bookmark.hpp"
@@ -64,6 +65,7 @@
 #include "fix/blue_32bit_color_fix.hpp"
 #include "fix/contrail_fix.hpp"
 #include "fix/interpolate/interpolate.hpp"
+#include "fix/shader/shader_transparent_generic.hpp"
 #include "fix/sun_fix.hpp"
 #include "fix/scope_blur_fix.hpp"
 #include "fix/flashlight_fix.hpp"
@@ -156,6 +158,12 @@ namespace Chimera {
                 const char *value_true = "true";
                 camo_fix_command(1, &value_true);
                 add_preframe_event(initial_tick);
+
+                // Reimplement shader_transparent_generic
+                if(game_engine() == GameEngine::GAME_ENGINE_CUSTOM_EDITION) {
+                    set_up_ringworld_hooks(RW_PLATFORM_GAME);
+                    set_up_shader_transparent_generic_impl();
+                }
 
                 // Fix some more bullshit
                 set_up_floor_decals_fix();

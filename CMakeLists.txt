@@ -21,6 +21,10 @@ find_package(Python3 REQUIRED)
 # We should have git, too, but it's not 100% required
 find_package(Git)
 
+add_subdirectory(src/ringworld)
+set_target_properties(ringworld PROPERTIES COMPILE_DEFINITIONS "RINGWORLD_ENABLE_ENHANCEMENTS")
+include_directories(src/ringworld/src)
+
 # Windows XP
 option(CHIMERA_WINXP "Enable support for Windows XP (increases binary size)" OFF)
 if(${CHIMERA_WINXP})
