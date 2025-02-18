@@ -30,6 +30,6 @@ namespace Chimera {
 
         // Enable ringworld shader_transparent_generic support.
         write_function_override(get_chimera().get_signature("rasterizer_shader_switch_cmp").data(), hook, reinterpret_cast<const void *>(draw_shader_transparent_generic_hook), &switch_jmp_ret);
-        add_map_load_event(rasterizer_shader_transparent_generic_update_instances_for_current_map);
+        add_map_load_event(rasterizer_shader_transparent_generic_update_instances_for_current_map, EVENT_PRIORITY_FINAL);
     }
 }
