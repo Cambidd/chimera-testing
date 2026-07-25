@@ -8,6 +8,8 @@
 #include "../rasterizer/rasterizer.hpp"
 #include "../halo_data/shader_defs.hpp"
 #include "../halo_data/rasterizer_common.hpp"
+#include "../halo_data/game_variables.hpp"
+#include "../math_trig/math_trig.hpp"
 
 
 namespace Chimera {
@@ -67,6 +69,50 @@ namespace Chimera {
         IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG2, D3DTA_TFACTOR);
     }
 
+    void chicago_fog_fix(TransparentGeometryGroup *group) noexcept {
+        // Test for the literal potatos that are the reason this is broken in the first place.
+        if(d3d9_device_caps->MaxTextureBlendStages < 5 || d3d9_device_caps->MaxSimultaneousTextures < 3 || !(d3d9_device_caps->PrimitiveMiscCaps & D3DPMISCCAPS_PERSTAGECONSTANT)) {
+            return;
+        }
+
+        _shader *shader = reinterpret_cast<_shader *>(group->shader);
+        std::uint16_t framebuffer_blend_function = 0;
+        std::uint32_t stage = 0;
+
+        if(shader->type == SHADER_TYPE_TRANSPARENT_CHICAGO) {
+            ShaderTransparentChicago *chicago_shader = reinterpret_cast<ShaderTransparentChicago *>(group->shader);
+            framebuffer_blend_function = chicago_shader->chicago.framebuffer_blend_function;
+            stage = chicago_shader->chicago.maps.count;
+        }
+        else if(shader->type == SHADER_TYPE_TRANSPARENT_CHICAGO_EXTENDED) {
+            ShaderTransparentChicagoExtended *extended_shader = reinterpret_cast<ShaderTransparentChicagoExtended *>(group->shader);
+            framebuffer_blend_function = extended_shader->chicago_extended.framebuffer_blend_function;
+            stage = extended_shader->chicago_extended.maps_4_stage.count;
+        }
+
+        if(TEST_FLAG(group->geometry_flags, RASTERIZER_GEOMETRY_FLAGS_SKY_BIT) && framebuffer_blend_function == SHADER_FRAMEBUFFER_BLEND_FUNCTION_ALPHA_BLEND) {
+            Plane3D *plane = &global_window_parameters->fog.plane;
+            Point3D *camera = &global_window_parameters->camera.position;
+
+            float eye_distance_to_fog_plane = plane->i * camera->x + plane->j * camera->y + plane->k * camera->z - plane->w;
+            float planar_eye_density = global_window_parameters->fog.planar_maximum_density * PIN(-eye_distance_to_fog_plane / global_window_parameters->fog.planar_maximum_depth, 0.0f, 1.0f);
+
+            ColorARGB color = {planar_eye_density, global_window_parameters->fog.planar_color.red, global_window_parameters->fog.planar_color.green, global_window_parameters->fog.planar_color.blue};
+
+            // Interpolate between current stage color and the fog plane color by the planar eye density.
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_CONSTANT, real_argb_color_to_pixel32(&color));
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG2, D3DTA_CURRENT);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG1, D3DTA_CONSTANT);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG0, D3DTA_CONSTANT | D3DTA_ALPHAREPLICATE);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLOROP, D3DTOP_LERP);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
+
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage + 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+            IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage + 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+        }
+    }
+
     extern "C" void chicago_projective_divide_first_map(TransparentGeometryGroup *group) noexcept {
         _shader *shader = reinterpret_cast<_shader *>(group->shader);
         // We only want to enable projective divide on stage 0 if the first map is 2D
@@ -87,6 +133,9 @@ namespace Chimera {
         if(!first_map_is_cube) {
             IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_PROJECTED);
         }
+        
+        // Fix fog blending when the sky bit is set and the framebuffer blend function is alpha blend.
+        chicago_fog_fix(group);
     }
 
     void reset_texture_transform_flags() noexcept {

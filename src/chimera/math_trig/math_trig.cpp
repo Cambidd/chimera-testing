@@ -265,6 +265,15 @@ namespace Chimera {
         color->blue = ((pixel >> 0) & 0xFF) / 255.0;
     }
 
+    std::uint32_t real_argb_color_to_pixel32(const ColorARGB *color) noexcept {
+        std::uint32_t output;
+        output = static_cast<std::uint32_t>(color->alpha * 255.0) << 24;
+        output |= static_cast<std::uint32_t>(color->red * 255.0) << 16;
+        output |= static_cast<std::uint32_t>(color->green * 255.0) << 8;
+        output |= static_cast<std::uint32_t>(color->blue * 255.0) << 0;
+        return output;
+    }
+
     float real_local_random() noexcept {
         return REAL_RANDOM(*local_random_seed);
     }

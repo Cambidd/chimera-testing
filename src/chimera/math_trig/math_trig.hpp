@@ -348,6 +348,11 @@ namespace Chimera {
     void pixel32_to_real_argb_color(const std::uint32_t pixel, ColorARGB *color) noexcept;
 
     /**
+     * Convert a ColorARGB color to a 32-bit argb.
+     */
+    std::uint32_t real_argb_color_to_pixel32(const ColorARGB *color) noexcept;
+
+    /**
      * Outputs a pseudorandom float. This uses the games random seed.
      */
     float real_local_random() noexcept;
