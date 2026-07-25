@@ -65,3 +65,31 @@ extern const size_t fog_screen_size;
 extern unsigned char black[];
 extern const size_t black_size;
 
+extern unsigned char eff_normal_tint_alpha_blend_z[];
+extern const size_t eff_normal_tint_alpha_blend_z_size;
+
+extern unsigned char eff_nlin_tint_add_z[];
+extern unsigned char eff_nlin_tint_alpha_blend_z[];
+extern unsigned char eff_nlin_tint_double_mul_z[];
+extern unsigned char eff_nlin_tint_mul_add_z[];
+extern unsigned char eff_nlin_tint_mul_z[];
+extern unsigned char eff_nlin_tint_z[];
+extern unsigned char eff_normal_tint_add_z[];
+extern unsigned char eff_normal_tint_alpha_blend_z[];
+extern unsigned char eff_normal_tint_double_mul_z[];
+extern unsigned char eff_normal_tint_mul_add_z[];
+extern unsigned char eff_normal_tint_mul_z[];
+extern unsigned char eff_normal_tint_z[];
+
+extern const size_t eff_nlin_tint_add_z_size;
+extern const size_t eff_nlin_tint_alpha_blend_z_size;
+extern const size_t eff_nlin_tint_double_mul_z_size;
+extern const size_t eff_nlin_tint_mul_add_z_size;
+extern const size_t eff_nlin_tint_mul_z_size;
+extern const size_t eff_nlin_tint_z_size;
+extern const size_t eff_normal_tint_add_z_size;
+extern const size_t eff_normal_tint_alpha_blend_z_size;
+extern const size_t eff_normal_tint_double_mul_z_size;
+extern const size_t eff_normal_tint_mul_add_z_size;
+extern const size_t eff_normal_tint_mul_z_size;
+extern const size_t eff_normal_tint_z_size;

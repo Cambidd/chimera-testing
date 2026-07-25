@@ -29,42 +29,35 @@ namespace Chimera {
 
     void rasterizer_create_pixel_shaders() noexcept {
         throw_error(global_d3d9_device, "d3d device missing");
-
         for(int i = 0; i < NUMBER_OF_CHIMERA_PIXEL_SHADERS; i++) {
-            if(!chimera_pixel_shaders[i]) {
-                DWORD *blob;
-                switch(i) {
-                    case CHIMERA_PIXEL_SHADER_WHITE:
-                        blob = reinterpret_cast<DWORD *>(white);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_WHITE_1_1:
-                        blob = reinterpret_cast<DWORD *>(white_1_1);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_BLACK:
-                        blob = reinterpret_cast<DWORD *>(black);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_HUD_METERS:
-                        blob = reinterpret_cast<DWORD *>(hud_meters);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_FOG:
-                        blob = reinterpret_cast<DWORD *>(fog);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_FOG_ALPHA_KILL:
-                        blob = reinterpret_cast<DWORD *>(fog_akill);
-                        break;
-                    case CHIMERA_PIXEL_SHADER_FOG_SCREEN:
-                        blob = reinterpret_cast<DWORD *>(fog_screen);
-                        break;
-                }
-
-                // Ensure ps2.0 support for all except the ps_1_1 shader.
-                if(d3d9_device_caps->PixelShaderVersion < 0xffff0200 && i != CHIMERA_PIXEL_SHADER_WHITE_1_1) {
-                    continue;
-                }
-
-                IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, blob, &chimera_pixel_shaders[i]);
-            }
+            throw_error(!chimera_pixel_shaders[i], "Something went horribly wrong");
         }
+
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(white_1_1), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_WHITE_1_1]);
+
+        // Ensure ps2.0 support for all except the ps_1_1 shader.
+        if(d3d9_device_caps->PixelShaderVersion < 0xffff0200) {
+            return;
+        }
+
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(white), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_WHITE]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(black), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_BLACK]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(hud_meters), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_HUD_METERS]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(fog), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_FOG]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(fog_akill), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_FOG_ALPHA_KILL]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(fog_screen), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_FOG_SCREEN]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_add_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_ADD_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_alpha_blend_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_ALPHA_BLEND_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_double_mul_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_DOUBLE_MUL_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_mul_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_MUL_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_nlin_tint_mul_add_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NLIN_TINT_MUL_ADD_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_add_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_ADD_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_alpha_blend_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_ALPHA_BLEND_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_double_mul_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_DOUBLE_MUL_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_mul_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_MUL_Z]);
+        IDirect3DDevice9_CreatePixelShader(*global_d3d9_device, reinterpret_cast<DWORD *>(eff_normal_tint_mul_add_z), &chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_EFF_NORMAL_TINT_MUL_Z]);
     }
 
     void rasterizer_release_pixel_shaders() noexcept {
