@@ -75,6 +75,10 @@ namespace Chimera {
             return;
         }
 
+        if(!rasterizer_debug_options->draw_environment_fog) {
+            return;
+        }
+
         _shader *shader = reinterpret_cast<_shader *>(group->shader);
         std::uint16_t framebuffer_blend_function = 0;
         std::uint32_t stage = 0;
@@ -97,7 +101,7 @@ namespace Chimera {
             float eye_distance_to_fog_plane = plane->i * camera->x + plane->j * camera->y + plane->k * camera->z - plane->w;
             float planar_eye_density = global_window_parameters->fog.planar_maximum_density * PIN(-eye_distance_to_fog_plane / global_window_parameters->fog.planar_maximum_depth, 0.0f, 1.0f);
 
-            ColorARGB color = {planar_eye_density, global_window_parameters->fog.planar_color.red, global_window_parameters->fog.planar_color.green, global_window_parameters->fog.planar_color.blue};
+            ColorARGB color = { planar_eye_density, global_window_parameters->fog.planar_color.red, global_window_parameters->fog.planar_color.green, global_window_parameters->fog.planar_color.blue };
 
             // Interpolate between current stage color and the fog plane color by the planar eye density.
             IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_CONSTANT, real_argb_color_to_pixel32(&color));

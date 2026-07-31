@@ -79,7 +79,7 @@ namespace Chimera {
         }
 
         // +1 on retail/demo
-        if(!game_engine() == GameEngine::GAME_ENGINE_CUSTOM_EDITION) {
+        if(game_engine() != GameEngine::GAME_ENGINE_CUSTOM_EDITION) {
             effect_shader_permutation_index++;
             zsprite_drawn = true;
         }
@@ -123,7 +123,7 @@ namespace Chimera {
             rasterizer_set_sampler_state(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
             // Draw here on retail to skip d3dx snot.
-            if(!game_engine() == GameEngine::GAME_ENGINE_CUSTOM_EDITION) {
+            if(game_engine() != GameEngine::GAME_ENGINE_CUSTOM_EDITION) {
                 rasterizer_transparent_geometry_group_draw_vertices(group, false);
                 zsprite_drawn = true;
             }
@@ -134,7 +134,7 @@ namespace Chimera {
         float *vertices = nullptr;
         IDirect3DVertexBuffer9_Lock(*aux_buffer, 0, 0x10000, reinterpret_cast<void **>(&vertices), 0);
 
-        float sequence[] = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+        float sequence[] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
         int sequence_size = 8;
         int count = RASTERIZER_TRANSPARENT_GEOMETRY_TEXCOORD_STREAM_SIZE;
 
