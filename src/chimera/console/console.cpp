@@ -71,7 +71,7 @@ namespace Chimera {
     static std::vector<CommandEntry *> new_entries_list;
     static std::vector<std::unique_ptr<CommandEntry>> new_entries_added;
 
-    void script_command_dump_command(int, const char **) noexcept {
+    bool script_command_dump_command(int, const char **) noexcept {
         std::filesystem::path path;
         if(entries) {
             std::size_t command_entry_count = *entry_count;
@@ -152,6 +152,8 @@ namespace Chimera {
 
             console_output("Dumped %zu global%s to script_global_dump.json", global_entry_count, global_entry_count == 1 ? "" : "s");
         }
+
+        return true;
     }
 
     static void on_tab_completion_start() noexcept {
