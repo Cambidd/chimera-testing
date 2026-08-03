@@ -348,7 +348,7 @@ BEGIN
   130, "http://support.microsoft.com/default.aspx?pr=drx"
   131, "Halo PC requires a 32 bit color quality setting to play in a windowed mode. In Windows, right-click on the desktop and choose Properties to adjust to this setting."
   132, "eula.rtf"
-  133, "AWTTWJRUSNRDTLUXDKVYUJTAYPLOWIRTSMSZ"
+  133, EXE_CHECKSUM_STRING
   135, "You started the game while holding down the control key."
   136, "-nosound\t\tDisable all sound\n-novideo\t\tDisable video playback\n-nojoystick\tDisable joysticks / gamepads\n-nogamma\tDisable adjustment of gamma\n-useff\t\tForces the game to run as a fixed fuction card\n-use11\t\tForces the game to run as a shader 1.1 card\n-use14\t\tForces the game to run as a shader 1.4 card\n-use20\t\tForces the game to run as a shader 2.0 card\n-safemode\tDisables as much as possible in the game\n\n-window\t\tRun the game in a window\n-width640\tForces the game to run at 640*480\n-vidmode w,h,r\tForces the game to run at width, height[, refresh]\n-adapter x\tForces the game to run fullscreen on a multimon adapter\n\n-port x\t\tServer port address used when hosting games\n-cport x\t\tClient port address used when joining games\n-ip x.x.x.x\tServer IP address used when you have multiple ip addresses\n-screenshot\tEnables the 'Print Scrn' key to generate screenshots\n-timedemo\tRuns four movies and writes out timedemo.txt\n-console\t\tEnable the debugging console\n"
   137, "We have detected that one of the Halo PC files is missing or corrupted. We recommend removing and reinstalling the game."

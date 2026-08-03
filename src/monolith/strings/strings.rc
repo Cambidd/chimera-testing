@@ -3,6 +3,11 @@
     Version 1.0.10.621
 */
 
+// EXE md5 checksum that has been memed up. Set for Halo Trial as 1.10 does not care anymore (Chimera will patch it anyway)
+#ifndef EXE_CHECKSUM_STRING
+#define EXE_CHECKSUM_STRING "CNUCXIQDCOXYTNPAVXQXYOUXXBCEZIUCTXXZ"
+#endif
+
 #include "guidelines.rc"
 #include "splash.rc"
 #include "dialog.rc"
