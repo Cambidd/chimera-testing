@@ -41,9 +41,9 @@ namespace Chimera {
                 return;
             }
         }
-        IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG0, D3DTA_CURRENT);
+        IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG1, D3DTA_CURRENT);
         IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG2, tss_option_argument);
-
+        IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, stage, D3DTSS_COLORARG0, tss_option_argument | D3DTA_COMPLEMENT);
     }
 
     extern "C" void chicago_multiply2x_set_xbox_blending(_shader *shader, std::uint32_t stage, DWORD tss_option_argument) noexcept {
