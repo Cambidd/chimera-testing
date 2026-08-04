@@ -93,3 +93,16 @@ extern const size_t eff_normal_tint_double_mul_z_size;
 extern const size_t eff_normal_tint_mul_add_z_size;
 extern const size_t eff_normal_tint_mul_z_size;
 extern const size_t eff_normal_tint_z_size;
+
+extern unsigned char decal_add[];
+extern unsigned char decal_multiply[];
+extern unsigned char decal_multiply2x[];
+extern unsigned char decal_alpha_blend[];
+extern unsigned char decal_alpha_madd[];
+
+extern const size_t decal_add_size;
+extern const size_t decal_multiply_size;
+extern const size_t decal_multiply2x_size;
+extern const size_t decal_alpha_blend_size;
+extern const size_t decal_alpha_madd_size;
+

@@ -108,6 +108,8 @@ add_library(chimera STATIC
     src/chimera/fix/contrail_fix.S
     src/chimera/fix/custom_map_lobby_fix.cpp
     src/chimera/fix/death_reset_time.cpp
+    src/chimera/fix/decal_fix.cpp
+    src/chimera/fix/decal_fix.S
     src/chimera/fix/z_fighting.cpp
     src/chimera/fix/z_fighting.S
     src/chimera/fix/descope_fix.cpp
@@ -115,8 +117,6 @@ add_library(chimera STATIC
     src/chimera/fix/extend_limits.S
     src/chimera/fix/extended_description_fix.cpp
     src/chimera/fix/map_hacks/map_hacks.cpp
-    src/chimera/fix/floor_decal_memery.cpp
-    src/chimera/fix/floor_decal_memery.S
     src/chimera/fix/force_crash.cpp
     src/chimera/fix/fp_model.cpp
     src/chimera/fix/fp_model.S

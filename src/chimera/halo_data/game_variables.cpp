@@ -24,6 +24,7 @@ namespace Chimera {
     bool *model_sky_flag;
     unsigned char **local_node_remap_table;
     std::int32_t *local_node_remap_table_size;
+    GameStateGlobals *game_state_globals;
 
     void set_up_game_variables() noexcept {
         static bool game_variables_enabled = false;
@@ -44,6 +45,7 @@ namespace Chimera {
             model_sky_flag = reinterpret_cast<bool *>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("model_sky_flag_sig").data() + 9));
             local_node_remap_table = reinterpret_cast<unsigned char **>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("rasterizer_set_up_node_parts_sig").data() + 15));
             local_node_remap_table_size = reinterpret_cast<std::int32_t *>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("rasterizer_set_up_node_parts_sig").data() + 21));
+            game_state_globals = reinterpret_cast<GameStateGlobals *>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("game_state_globals_sig").data() + 21));
 
             game_variables_enabled = true;
         }

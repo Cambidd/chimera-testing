@@ -51,7 +51,7 @@
 #include "fix/checkpoint_fix.hpp"
 #include "fix/chicago_fix.hpp"
 #include "fix/scoreboard_fade_fix.hpp"
-#include "fix/floor_decal_memery.hpp"
+#include "fix/decal_fix.hpp"
 #include "fix/fov_fix.hpp"
 #include "fix/fp_reverb.hpp"
 #include "fix/force_crash.hpp"
@@ -180,7 +180,7 @@ namespace Chimera {
                 set_up_screen_fog();
 
                 // Fix some more bullshit
-                set_up_floor_decals_fix();
+                set_up_decals_fix();
                 set_up_chicago_fix();
 
                 if(chimera->get_ini()->get_value_bool("halo.april_fools").value_or(true)) {

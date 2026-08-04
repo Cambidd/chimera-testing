@@ -25,6 +25,7 @@ namespace Chimera {
     extern bool *model_sky_flag;
     extern unsigned char **local_node_remap_table;
     extern std::int32_t *local_node_remap_table_size;
+    extern GameStateGlobals *game_state_globals;
 
 
     /**

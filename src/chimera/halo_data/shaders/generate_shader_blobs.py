@@ -120,3 +120,9 @@ if __name__ == '__main__':
     generate_shader_blobs("eff_normal_tint_mul_add_z", sys.argv[1] + "pixel/eff_normal_tint_mul_add_z.cso", 3)
     generate_shader_blobs("eff_normal_tint_mul_z", sys.argv[1] + "pixel/eff_normal_tint_mul_z.cso", 3)
     generate_shader_blobs("eff_normal_tint_z", sys.argv[1] + "pixel/eff_normal_tint_z.cso", 3)
+
+    generate_shader_blobs("decal_add", sys.argv[1] + "pixel/decal_add.cso", 3)
+    generate_shader_blobs("decal_multiply", sys.argv[1] + "pixel/decal_multiply.cso", 3)
+    generate_shader_blobs("decal_multiply2x", sys.argv[1] + "pixel/decal_multiply2x.cso", 3)
+    generate_shader_blobs("decal_alpha_blend", sys.argv[1] + "pixel/decal_alpha_blend.cso", 3)
+    generate_shader_blobs("decal_alpha_madd", sys.argv[1] + "pixel/decal_alpha_madd.cso", 3)

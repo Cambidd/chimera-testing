@@ -837,6 +837,21 @@ namespace Chimera {
     };
     static_assert(sizeof(ShaderTransparentGlass) == 0x1E0);
 
+    /**
+    * shader_decal
+    */
+    struct ShaderDecal {
+        std::uint16_t flags;
+        std::int16_t type;
+        std::int16_t framebuffer_blend_function;
+        std::uint16_t pad1;
+        PAD(0x14);
+
+        TagReference map;
+        PAD(0x14);
+    };
+    static_assert(sizeof(ShaderDecal) == 0x40);
+
 }
 
 #endif
