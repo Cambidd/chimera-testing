@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: "Build Chimera"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: "Install deps"
@@ -75,7 +75,7 @@ jobs:
           name: chimera-${{ steps.package.outputs.SHA }}
           path: ./chimera.7z
 
-      # Disabled 2025-11-20, We want to make releases with more current MSYS2 compilers and we want to be able to choose between msvcrt and ucrt.
+      # Disabled 2025-11-20, We want to make releases with more current mingw-w64 compilers and we want to be able to choose between msvcrt and ucrt.
       # Create a release and upload the build if building a tagged commit
       # NOTE: the create-release and upload-release-asset actions are
       # unmaintained, but should keep working for the forseeable future
