@@ -30,6 +30,7 @@ namespace Chimera {
     IDirect3DVertexBuffer9 **decal_vertex_buffer = nullptr;
     static bool map_loaded = false;
     static bool can_update_cache = false;
+    static bool *fog_hack = nullptr;
 
     extern "C" void set_up_pixel_shader_for_decals(ShaderDecal *shader) noexcept {
         // If we can, use a ps2.0 pixel shader instead of the fixed function texture blending.
@@ -38,6 +39,7 @@ namespace Chimera {
         }
 
         IDirect3DPixelShader9 *pixel_shader = nullptr;
+        float ps_constants[4] = {0};
 
         // This could be done in a simgle shader, but is inefficient under ps2.0 due to lack of proper branching.
         switch(shader->framebuffer_blend_function) {
@@ -51,7 +53,7 @@ namespace Chimera {
                 pixel_shader = chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_DECAL_MULTIPLY];
                 break;
             case SHADER_FRAMEBUFFER_BLEND_FUNCTION_DOUBLE_MULTIPLY:
-                pixel_shader = chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_DECAL_MULTIPLY2x];
+                pixel_shader = chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_DECAL_MULTIPLY2X];
                 break;
             case SHADER_FRAMEBUFFER_BLEND_FUNCTION_ALPHA_BLEND:
                 pixel_shader = chimera_pixel_shaders[CHIMERA_PIXEL_SHADER_DECAL_ALPHA_BLEND];
@@ -62,8 +64,11 @@ namespace Chimera {
             default:
                 break;
         }
+        
+        ps_constants[3] = *fog_hack ? (1.0f / 255.0f) : 0.0f;
 
         IDirect3DDevice9_SetPixelShader(*global_d3d9_device, pixel_shader);
+        IDirect3DDevice9_SetPixelShaderConstantF(*global_d3d9_device, 0, ps_constants, 1);
         IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, 0, D3DTSS_COLOROP, D3DTOP_DISABLE);
         IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
     }
@@ -140,6 +145,7 @@ namespace Chimera {
         // Fix the pixel shader (or lack thereof).
         static Hook hook;
         write_jmp_call(get_chimera().get_signature("decal_draw_vertices_sig").data(), hook, reinterpret_cast<const void *>(fix_decal_shaders_asm), nullptr);
+        fog_hack = *reinterpret_cast<bool **>(get_chimera().get_signature("decal_fog_hack_sig").data() + 2);
 
         // Basically copy the vertex buffer contents to a cache upon creating a checkpoint
         // and writing it back on game revert. Xbox allocates the vertex buffer into the game
