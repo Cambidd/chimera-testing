@@ -227,6 +227,7 @@ add_library(chimera STATIC
     src/chimera/halo_data/script.cpp
     src/chimera/halo_data/script.S
     src/chimera/halo_data/server.cpp
+    src/chimera/halo_data/structure_bsp.cpp
     src/chimera/halo_data/tag.cpp
     src/chimera/halo_data/tag_class.cpp
     src/chimera/localization/localization.cpp

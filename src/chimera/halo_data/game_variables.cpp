@@ -25,6 +25,8 @@ namespace Chimera {
     unsigned char **local_node_remap_table;
     std::int32_t *local_node_remap_table_size;
     GameStateGlobals *game_state_globals;
+    StructureBsp **global_structure_bsp;
+    WindGlobals *wind_globals;
 
     void set_up_game_variables() noexcept {
         static bool game_variables_enabled = false;
@@ -46,6 +48,8 @@ namespace Chimera {
             local_node_remap_table = reinterpret_cast<unsigned char **>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("rasterizer_set_up_node_parts_sig").data() + 15));
             local_node_remap_table_size = reinterpret_cast<std::int32_t *>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("rasterizer_set_up_node_parts_sig").data() + 21));
             game_state_globals = reinterpret_cast<GameStateGlobals *>(*reinterpret_cast<std::byte **>(get_chimera().get_signature("game_state_globals_sig").data() + 21));
+            global_structure_bsp = *reinterpret_cast<StructureBsp ***>(get_chimera().get_signature("current_bsp_tag_sig").data() + 1);
+            wind_globals = *reinterpret_cast<WindGlobals **>(get_chimera().get_signature("wind_globals_sig").data() + 8);
 
             game_variables_enabled = true;
         }

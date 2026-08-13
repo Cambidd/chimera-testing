@@ -6,6 +6,7 @@
 #include "shader_defs.hpp"
 #include "rasterizer_common.hpp"
 #include "globals.hpp"
+#include "structure_bsp.hpp"
 
 namespace Chimera {
     extern DynamicVertices *dynamic_vertices;
@@ -26,6 +27,8 @@ namespace Chimera {
     extern unsigned char **local_node_remap_table;
     extern std::int32_t *local_node_remap_table_size;
     extern GameStateGlobals *game_state_globals;
+    extern StructureBsp **global_structure_bsp;
+    extern WindGlobals *wind_globals;
 
 
     /**

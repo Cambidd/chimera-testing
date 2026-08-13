@@ -126,6 +126,11 @@ namespace Chimera {
         float l;
     };
 
+    struct Euler2DYP {
+        float yaw;
+        float pitch;
+    };
+
     struct Euler3DPYR {
         float pitch;
         float yaw;
