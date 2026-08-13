@@ -28,7 +28,7 @@ namespace Chimera {
     static_assert(sizeof(WindState) == 32);
 
     struct WindGlobals {
-        boolean initialized;
+        bool initialized;
         Vector3D variance[3][64];
         short count;
         WindState wind_states[32];
