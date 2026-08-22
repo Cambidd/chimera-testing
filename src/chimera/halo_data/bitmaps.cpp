@@ -24,34 +24,91 @@ namespace Chimera {
         return *pc_texture_table;
     }
 
-    void *bitmap_covert_format(BitmapData *bitmap) noexcept {
-        auto *pixel_data = reinterpret_cast<std::uint8_t *>(bitmap->base_address);
+    void *bitmap_covert_format(BitmapData *bitmap, bool force_32) noexcept {
         void *converted_bitmap = nullptr;
         switch(bitmap->format) {
             case BITMAP_DATA_FORMAT_A8: {
-                std::uint16_t *a8y8_bitmap = reinterpret_cast<std::uint16_t *>(GlobalAlloc(0, bitmap->pixels_size * 2));
-                for(int i = 0; i < bitmap->pixels_size; i++) {
-                    a8y8_bitmap[i] = lookup_a8[pixel_data[i]];
+                auto *pixel_data = reinterpret_cast<std::uint8_t *>(bitmap->base_address);
+                if(force_32) {
+                    std::uint32_t *a8r8g8b8_bitmap = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 4));
+                    for(int i = 0; i < bitmap->pixels_size; i++) {
+                        Pixel32 new_pixel = 0x00FFFFFF;
+                        new_pixel = new_pixel | pixel_data[i] << 24;
+                        a8r8g8b8_bitmap[i] = new_pixel;
+                    }
+                    converted_bitmap = reinterpret_cast<void *>(a8r8g8b8_bitmap);
                 }
-                converted_bitmap = reinterpret_cast<void *>(a8y8_bitmap);
+                else {
+                    std::uint16_t *a8y8_bitmap = reinterpret_cast<std::uint16_t *>(GlobalAlloc(0, bitmap->pixels_size * 2));
+                    for(int i = 0; i < bitmap->pixels_size; i++) {
+                        a8y8_bitmap[i] = lookup_a8[pixel_data[i]];
+                    }
+                    converted_bitmap = reinterpret_cast<void *>(a8y8_bitmap);
+                }
                 break;
             }
 
             case BITMAP_DATA_FORMAT_AY8: {
-                std::uint16_t *a8y8_bitmap = reinterpret_cast<std::uint16_t *>(GlobalAlloc(0, bitmap->pixels_size * 2));
-                for(int i = 0; i < bitmap->pixels_size; i++) {
-                    a8y8_bitmap[i] = lookup_ay8[pixel_data[i]];
+                auto *pixel_data = reinterpret_cast<std::uint8_t *>(bitmap->base_address);
+                if(force_32) {
+                    std::uint32_t *a8r8g8b8_bitmap = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 4));
+                    for(int i = 0; i < bitmap->pixels_size; i++) {
+                        Pixel32 new_pixel = pixel_data[i] << 24;
+                        new_pixel = new_pixel | pixel_data[i] << 16;
+                        new_pixel = new_pixel | pixel_data[i] << 8;
+                        new_pixel = new_pixel | pixel_data[i];
+
+                        a8r8g8b8_bitmap[i] = new_pixel;
+                    }
+                    converted_bitmap = reinterpret_cast<void *>(a8r8g8b8_bitmap);
                 }
-                converted_bitmap = reinterpret_cast<void *>(a8y8_bitmap);
+                else {
+                    std::uint16_t *a8y8_bitmap = reinterpret_cast<std::uint16_t *>(GlobalAlloc(0, bitmap->pixels_size * 2));
+                    for(int i = 0; i < bitmap->pixels_size; i++) {
+                        a8y8_bitmap[i] = lookup_ay8[pixel_data[i]];
+                    }
+                    converted_bitmap = reinterpret_cast<void *>(a8y8_bitmap);
+                }
+                break;
+            }
+
+            case BITMAP_DATA_FORMAT_Y8: {
+                auto *pixel_data = reinterpret_cast<std::uint8_t *>(bitmap->base_address);
+                std::uint32_t *a8r8g8b8_bitmap = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 4));
+                for(int i = 0; i < bitmap->pixels_size; i++) {
+                    Pixel32 new_pixel = 0xFF000000;
+                    new_pixel = new_pixel | pixel_data[i] << 16;
+                    new_pixel = new_pixel | pixel_data[i] << 8;
+                    new_pixel = new_pixel | pixel_data[i];
+
+                    a8r8g8b8_bitmap[i] = new_pixel;
+                }
+                converted_bitmap = reinterpret_cast<void *>(a8r8g8b8_bitmap);
+                break;
+            }
+
+            case BITMAP_DATA_FORMAT_A8Y8: {
+                auto *pixel_data = reinterpret_cast<std::uint16_t *>(bitmap->base_address);
+                std::uint32_t *a8r8g8b8_bitmap = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 2));
+                for(int i = 0; i < bitmap->pixels_size / 2; i++) {
+                    Pixel32 new_pixel = pixel_data[i] << 16;
+                    std::uint32_t y8 = pixel_data[i] << 24;
+                    new_pixel = new_pixel | y8 >> 16;
+                    new_pixel = new_pixel | y8 >> 24;
+
+                    a8r8g8b8_bitmap[i] = new_pixel;
+                }
+                converted_bitmap = reinterpret_cast<void *>(a8r8g8b8_bitmap);
                 break;
             }
 
             case BITMAP_DATA_FORMAT_P8_BUMP: {
-                std::uint32_t *uncomp_data = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 4));
+                auto *pixel_data = reinterpret_cast<std::uint8_t *>(bitmap->base_address);
+                std::uint32_t *a8r8g8b8_bitmap = reinterpret_cast<std::uint32_t *>(GlobalAlloc(0, bitmap->pixels_size * 4));
                 for(int i = 0; i < bitmap->pixels_size; i++) {
-                    uncomp_data[i] = lookup_p8[pixel_data[i]];
+                    a8r8g8b8_bitmap[i] = lookup_p8[pixel_data[i]];
                 }
-                converted_bitmap = reinterpret_cast<void *>(uncomp_data);
+                converted_bitmap = reinterpret_cast<void *>(a8r8g8b8_bitmap);
                 break;
             }
 

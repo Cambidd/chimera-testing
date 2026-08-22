@@ -207,7 +207,7 @@ namespace Chimera {
      * @param  bitmap Bitmap data block to convert.
      * @return pointer to the converted raw pixel data.
      */
-    void *bitmap_covert_format(BitmapData *bitmap) noexcept;
+    void *bitmap_covert_format(BitmapData *bitmap, bool force_32) noexcept;
 
 }
 

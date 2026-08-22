@@ -5,6 +5,7 @@
 #include "bitmap_formats.hpp"
 #include "../halo_data/bitmaps.hpp"
 #include "../chimera.hpp"
+#include "../config/ini.hpp"
 #include "../signature/hook.hpp"
 #include "../signature/signature.hpp"
 
@@ -15,24 +16,22 @@ namespace Chimera {
 
     extern "C" void check_for_invalid_bitmap_format(BitmapData *bitmap) noexcept {
         // Convert invalid formats
-        if(bitmap->format == BITMAP_DATA_FORMAT_A8 || bitmap->format == BITMAP_DATA_FORMAT_AY8 || bitmap->format == BITMAP_DATA_FORMAT_P8_BUMP) {
-            void *new_bitmap = bitmap_covert_format(bitmap);
-            GlobalFree(bitmap->base_address);
-            bitmap->base_address = new_bitmap;
-
-            // Tell the game to treat this bitmap data block as either A8Y8 or A8R8G8B8.
-            switch(bitmap->format) {
-                case BITMAP_DATA_FORMAT_A8:
-                case BITMAP_DATA_FORMAT_AY8:
-                    bitmap->format = BITMAP_DATA_FORMAT_A8Y8;
-                    break;
-
-                case BITMAP_DATA_FORMAT_P8_BUMP:
-                    bitmap->format = BITMAP_DATA_FORMAT_A8R8G8B8;
-                    break;
-
-                default:
-                    break;
+        // Intel d3d9 drivers hate monochrome. Convert all monochrome bitmaps to ARGB
+        if(get_chimera().get_ini()->get_value_bool("debug.convert_monochrome_to_argb").value_or(false)) {
+            if((bitmap->format >= BITMAP_DATA_FORMAT_A8 && bitmap->format <= BITMAP_DATA_FORMAT_A8Y8) || bitmap->format == BITMAP_DATA_FORMAT_P8_BUMP) {
+                void *new_bitmap = bitmap_covert_format(bitmap, true);
+                GlobalFree(bitmap->base_address);
+                bitmap->base_address = new_bitmap;
+                bitmap->format = (bitmap->format == BITMAP_DATA_FORMAT_Y8) ? BITMAP_DATA_FORMAT_X8R8G8B8 : BITMAP_DATA_FORMAT_A8R8G8B8;
+            }
+        }
+        // Converting A8 and AY8 to A8Y8 should be fine most of the time.
+        else {
+            if(bitmap->format == BITMAP_DATA_FORMAT_A8 || bitmap->format == BITMAP_DATA_FORMAT_AY8 || bitmap->format == BITMAP_DATA_FORMAT_P8_BUMP) {
+                void *new_bitmap = bitmap_covert_format(bitmap, false);
+                GlobalFree(bitmap->base_address);
+                bitmap->base_address = new_bitmap;
+                bitmap->format = (bitmap->format == BITMAP_DATA_FORMAT_P8_BUMP) ? BITMAP_DATA_FORMAT_A8R8G8B8 : BITMAP_DATA_FORMAT_A8Y8;
             }
         }
     }

@@ -24,7 +24,9 @@ namespace Chimera {
         IDirect3DDevice9_SetSamplerState(*global_d3d9_device, 0, D3DSAMP_BORDERCOLOR, background);
         IDirect3DDevice9_SetSamplerState(*global_d3d9_device, 0, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
         IDirect3DDevice9_SetSamplerState(*global_d3d9_device, 0, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
-        IDirect3DDevice9_SetSamplerState(*global_d3d9_device, 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+        // Some d3d9 implementations don't like bordercolor + linear filtering. Xbox uses point sampling here anyway.
+        IDirect3DDevice9_SetSamplerState(*global_d3d9_device, 0, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
 
         // diffuse colour * texture. Base game just returns the diffuse colour.
         IDirect3DDevice9_SetTextureStageState(*global_d3d9_device, 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
