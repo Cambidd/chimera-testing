@@ -1131,6 +1131,14 @@ namespace Chimera {
                 for(std::uint32_t s = 0; s < sequence_count; s++) {
                     increment_if_necessary(sequences + s * 64 + 0x34 + 0x4);
                 }
+
+                auto bitmap_count = *reinterpret_cast<std::uint32_t *>(base + 0x60);
+                auto *bitmap_data = *reinterpret_cast<std::byte **>(base + 0x64);
+
+                // For each bitmap data block, Copy the format into these unused 2 bytes.
+                for(std::uint32_t j = 0; j < bitmap_count; j++) {
+                    *reinterpret_cast<std::uint16_t *>(bitmap_data + (j * 0x30) + 0x16) = *reinterpret_cast<std::uint16_t *>(bitmap_data + (j * 0x30) + 0xC);
+                }
                 break;
             }
             case TagClassInt::TAG_CLASS_SOUND: {
@@ -1223,10 +1231,10 @@ namespace Chimera {
                         auto *bitmap_count = reinterpret_cast<std::uint32_t *>(tag.data + 0x60);
                         auto *bitmap_data = *reinterpret_cast<std::byte **>(tag.data + 0x64);
 
-                        // For each bitmap data block, set correct tag ID.
+                        // For each bitmap data block, set correct tag ID and reset the format.
                         for(std::uint32_t j = 0; j < *bitmap_count; j++) {
-                            *reinterpret_cast<TagID *>(bitmap_data + 0x20) = tag.id;
-                            bitmap_data += 0x30;
+                            *reinterpret_cast<TagID *>(bitmap_data + (j * 0x30) + 0x20) = tag.id;
+                            *reinterpret_cast<std::uint16_t *>(bitmap_data + (j * 0x30) + 0xC) = *reinterpret_cast<std::uint16_t *>(bitmap_data + (j * 0x30) + 0x16);
                         }
                         break;
                     }

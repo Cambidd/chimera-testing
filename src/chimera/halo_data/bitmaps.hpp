@@ -140,7 +140,7 @@ namespace Chimera {
         std::uint16_t flags;
         Vector2DInt registration_point;
         std::int16_t mipmap_count;
-        PAD(0x2);
+        PAD(0x2); // If we ever want to use this for something, need to fix map_loading for indexed tags.
         std::int32_t pixels_offset;
         std::int32_t pixels_size;
         TagID tag_id;
