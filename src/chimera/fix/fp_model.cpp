@@ -63,8 +63,8 @@ namespace Chimera {
         memcpy(&frustum, &global_window_parameters->frustum, sizeof(RenderFrustum));
 
         // Create new frustum scaled for fov.
-        auto resoution = get_resolution();
-        float fov_scale_factor = static_cast<float>(resoution.frame_bounds[2] - resoution.frame_bounds[0]) / static_cast<float>(resoution.height);
+        auto resolution = get_resolution();
+        float fov_scale_factor = static_cast<float>(resolution.frame_bounds[2] - resolution.frame_bounds[0]) / static_cast<float>(resolution.height);
         global_window_parameters->camera.vertical_field_of_view = 2.0f * std::atan((480.0f / 640.0f) * fov_scale_factor * std::tan(DEGREES_TO_RADIANS(70.0f) * 0.5));
         render_camera_build_frustum(&global_window_parameters->camera, &global_window_parameters->frustum.frustum_bounds, &frustum_fp, true);
         global_window_parameters->camera.vertical_field_of_view = v_fov;
